@@ -65,7 +65,12 @@ public class Board
 	//clears the grid by placing E in every cell
 	public void clearBoard()
 	{
-
+		char[][] clearedBoard = {{'E', 'E', 'E'},
+								 {'E', 'E', 'E'},
+								 {'E', 'E', 'E'}}; 
+		
+		this.grid = clearedBoard;
+		this.saveBoardToFile(); 
 	}
 
 	public static void main(String args[])
