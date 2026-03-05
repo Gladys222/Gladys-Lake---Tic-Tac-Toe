@@ -1,4 +1,4 @@
-package tictactoe8;
+package tictactoe;
 
 import java.io.File;
 import java.io.FileWriter;
