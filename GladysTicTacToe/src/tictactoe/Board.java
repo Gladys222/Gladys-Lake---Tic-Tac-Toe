@@ -31,6 +31,7 @@ public class Board
 		//use isValidBoard method as a guide
 
 	}
+	
 
 
 	//valid if it resembles a 3x3 board that contains only E, X, O
@@ -44,7 +45,29 @@ public class Board
 	//saves the grid to the file in the proper format (CSV)
 	public void saveBoardToFile()
 	{
-
+		try
+		{
+			File file = new File("src/tictactoe/"+this.filename); 
+			FileWriter writer = new FileWriter(file);  
+			String boardContents = ""; 
+			for(int row = 0; row < grid.length; row++)
+			{
+				for(int col = 0; col < grid[0].length; col++)
+				{
+					if(col < 2) boardContents += grid[row][col] + ",";
+					else boardContents += grid[row][col]; 
+				}
+				if(row < 2) boardContents += "\n"; 
+			}
+			
+			writer.write(boardContents);
+			writer.close(); 
+		}
+		catch(Exception error)
+		{
+			error.printStackTrace(); 
+		}
+		
 
 	}
 
@@ -55,7 +78,7 @@ public class Board
 	{
 		for(int row = 0; row < grid.length; row++)
 		{
-			for(int col = 0; col < grid[0].length; col++ )
+			for(int col = 0; col < grid[0].length; col++)
 			{
 				System.out.print(grid[row][col] + " ");
 			}
@@ -67,19 +90,17 @@ public class Board
 	//create a random board
 	public void createRandomBoard()
 	{
-		char options[] = {'E', 'X', 'O'}; //Row major order 
-		char[][] randomBoard = new char [3][3]; 
-		for(int row = 0; row < randomBoard.length; row++)
+		char[] options = {'E', 'X', 'O'}; //Row major order 
+		for(int row = 0; row < grid.length; row++)
 		{
-			for(int col = 0; col < randomBoard[0].length; col++)
+			for(int col = 0; col < grid[0].length; col++)
 			{
-				int index = (int)(Math.random()*3); 
-				randomBoard[row][col] = options[index]; 
+				int index = (int)(Math.random() * options.length); 
+				grid[row][col] = options[index]; 
 			}
 		}
-		this.grid = randomBoard; 
-		this.saveBoardToFile(); 
 		
+		this.saveBoardToFile();
 	}
 
 	//clears the grid by placing E in every cell
