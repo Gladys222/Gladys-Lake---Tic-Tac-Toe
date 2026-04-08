@@ -23,7 +23,7 @@ public class Board
 	
 	public char getCell(int row, int col)
 	{
-		
+		return grid[row][col]; 
 	}
 
 	public void setCell(int row, int col, char player)
