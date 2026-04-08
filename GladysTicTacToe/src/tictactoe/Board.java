@@ -20,6 +20,18 @@ public class Board
 		//if the board is valid then create the 3x3 grid
 		//and load the board from the file
 	}
+	
+	public char getCell(int row, int col)
+
+	public void setCell(int row, int col, char player)
+
+	public char[][] getGrid()
+
+	public void setGrid(char[][] newGrid)
+	{
+		this.grid = newGrid; 
+		saveBoardToFile(); 
+	}
 
 	//loads the grid with the file contents - [5 points]
 	public void loadBoardFromFile()
@@ -37,8 +49,34 @@ public class Board
 	//valid if it resembles a 3x3 board that contains only E, X, O
 	public boolean isValidBoardFile()
 	{
-
-
+		try
+		{
+			File file = new File("src/tictactoe/"+this.filename);
+			Scanner scanner = new Scanner(file); 
+			int xCount = 0, oCount = 0; 
+			while(scanner.hasNextLine())
+			{
+				String line = scanner.nextLine().trim(); 
+				if(!line.matches("[EXO], [EXO], [EXO]"))
+				{
+					scanner.close(); 
+					return false; 
+				}
+				String[] lineArray = line.split(","); 
+				
+			}
+			
+		scanner.close(); 
+		return xCount == oCount || xCount == oCount + 1; 
+			
+		}
+		catch(Exception error)
+		{
+			error.printStackTrace(); 
+			return false; 
+		}
+		
+		
 	}
 
 
@@ -70,6 +108,7 @@ public class Board
 		
 
 	}
+	
 
 
 	/***These are the methods used to test those above***/
