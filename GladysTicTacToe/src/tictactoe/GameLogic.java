@@ -46,8 +46,11 @@ public class GameLogic
 	     }
 	
 	 public boolean isDraw(Board board)
-	    {
-	        char[][] grid = board.getGrid();
+	 {
+		 
+		 {
+	 
+	        char[][] grid = board.getGrid(); 
 
 	        for(int row = 0; row < 3; row++)
 	        {
@@ -65,7 +68,16 @@ public class GameLogic
 	            }
 
 	            return true;
-	        }	
+	        }
+	        
+	        }
+		 return false;
+	 }
+	        
+	 public boolean isGameOver(Board board)
+	 {
+	    return checkWin(board, 'X') || checkWin(board, 'O') || isDraw(board);
+	 }        
 
 }
 
