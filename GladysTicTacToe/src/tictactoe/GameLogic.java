@@ -109,6 +109,26 @@ public class GameLogic
 	         return 'O';
 	     }
 	 }
+	 
+	 public boolean makeMove(Board board, int row, int col)
+	 {
+		 char player = getCurrentPlayer(board);
+		 
+	     board.setCell(row, col, getCurrentPlayer(board));
+
+	     if(board.isValidBoardFile() && row >= 0 && row <= 2 && col >= 0 && col <= 2)
+	         return true;
+
+	     return false;
+	 }
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
 }
 
 
