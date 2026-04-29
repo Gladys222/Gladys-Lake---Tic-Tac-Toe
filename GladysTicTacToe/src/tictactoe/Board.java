@@ -16,9 +16,16 @@ public class Board
 	//non-default constructor - [5 points]
 	public Board(String filename)
 	{
-		//set the file name
-		//if the board is valid then create the 3x3 grid
-		//and load the board from the file
+	    this.filename = filename;
+	    this.grid = new char[3][3];
+	    if (isValidBoardFile())
+	    {
+	        loadBoardFromFile();
+	    }
+	    else
+	    {
+	        clearBoard();
+	    }
 	}
 	
 	public char getCell(int row, int col)
@@ -28,8 +35,8 @@ public class Board
 
 	public void setCell(int row, int col, char player)
 	{
-		 grid[row][col] = player;
-		 saveBoardToFile();
+		grid[row][col] = player;
+		saveBoardToFile();
 	}
 	
 
@@ -48,7 +55,7 @@ public class Board
 	public void loadBoardFromFile()
 	{
 
-		//Use a scanner to read the board file
+		//Use a scanner to read the  file
 		//and populate the grid with the board values
 		//remember to close the scanner afterwards
 		//use isValidBoard method as a guide
@@ -173,6 +180,8 @@ public class Board
 		b.saveBoardToFile();
 		b.loadBoardFromFile();
 		System.out.println();
-		b.printGrid();
+		b.printGrid(); 
 	}
+	
+	
 }
