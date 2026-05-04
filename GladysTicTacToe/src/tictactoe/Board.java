@@ -6,182 +6,143 @@ import java.util.Scanner;
 
 public class Board
 {
-	//holds game play data in an instance variable
-	private char[][] grid;
+    private char[][] grid;
+    private String filename;
 
-	//holds game play data in a CSV file
-	private String filename;
+    public Board(String filename)
+    {
+        this.filename = filename;
+        this.grid = new char[3][3];
+        if (isValidBoardFile())
+            loadBoardFromFile();
+        else
+            clearBoard();
+    }
 
+    public char getCell(int row, int col)   { return grid[row][col]; }
+    public char[][] getGrid()               { return grid; }
 
-	//non-default constructor - [5 points]
-	public Board(String filename)
-	{
-	    this.filename = filename;
-	    this.grid = new char[3][3];
-	    if (isValidBoardFile())
-	    {
-	        loadBoardFromFile();
-	    }
-	    else
-	    {
-	        clearBoard();
-	    }
-	}
-	
-	public char getCell(int row, int col)
-	{
-		return grid[row][col]; 
-	}
+    public void setCell(int row, int col, char player)
+    {
+        grid[row][col] = player;
+        saveBoardToFile();
+    }
 
-	public void setCell(int row, int col, char player)
-	{
-		grid[row][col] = player;
-		saveBoardToFile();
-	}
-	
+    public void setGrid(char[][] newGrid)
+    {
+        this.grid = newGrid;
+        saveBoardToFile();
+    }
 
-	public char[][] getGrid()
-	{
-		return grid; 
-	}
+    // ── Fixed: actually populates grid ───────────────────────────
+    public void loadBoardFromFile()
+    {
+        try
+        {
+            File file    = new File("src/tictactoe/" + this.filename);
+            Scanner scan = new Scanner(file);
+            int row = 0;
+            while (scan.hasNextLine() && row < 3)
+            {
+                String line = scan.nextLine().trim();
+                // Support both "E,X,O" and "E, X, O"
+                String[] parts = line.split(",\\s*");
+                if (parts.length == 3)
+                    for (int col = 0; col < 3; col++)
+                        grid[row][col] = parts[col].trim().charAt(0);
+                row++;
+            }
+            scan.close();
+        }
+        catch (Exception e)
+        {
+            clearBoard();
+        }
+    }
 
-	public void setGrid(char[][] newGrid)
-	{
-		this.grid = newGrid; 
-		saveBoardToFile(); 
-	}
+    public boolean isValidBoardFile()
+    {
+        try
+        {
+            File file    = new File("src/tictactoe/" + this.filename);
+            Scanner scan = new Scanner(file);
+            int rows = 0;
+            int xCount = 0, oCount = 0;
+            while (scan.hasNextLine())
+            {
+                String line = scan.nextLine().trim();
+                if (!line.matches("[EXO],\\s*[EXO],\\s*[EXO]"))
+                { scan.close(); return false; }
+                String[] parts = line.split(",\\s*");
+                for (String p : parts)
+                {
+                    if (p.trim().equals("X")) xCount++;
+                    if (p.trim().equals("O")) oCount++;
+                }
+                rows++;
+            }
+            scan.close();
+            return rows == 3 && (xCount == oCount || xCount == oCount + 1);
+        }
+        catch (Exception e) { return false; }
+    }
 
-	//loads the grid with the file contents - [5 points]
-	public void loadBoardFromFile()
-	{
+    public void saveBoardToFile()
+    {
+        try
+        {
+            File file       = new File("src/tictactoe/" + this.filename);
+            FileWriter writer = new FileWriter(file);
+            StringBuilder sb  = new StringBuilder();
+            for (int row = 0; row < grid.length; row++)
+            {
+                for (int col = 0; col < grid[0].length; col++)
+                {
+                    sb.append(grid[row][col]);
+                    if (col < 2) sb.append(',');
+                }
+                if (row < 2) sb.append('\n');
+            }
+            writer.write(sb.toString());
+            writer.close();
+        }
+        catch (Exception e) { e.printStackTrace(); }
+    }
 
-		//Use a scanner to read the  file
-		//and populate the grid with the board values
-		//remember to close the scanner afterwards
-		//use isValidBoard method as a guide
+    public void printGrid()
+    {
+        for (int row = 0; row < grid.length; row++)
+        {
+            for (int col = 0; col < grid[0].length; col++)
+                System.out.print(grid[row][col] + " ");
+            System.out.println();
+        }
+    }
 
-	}
-	
+    public void createRandomBoard()
+    {
+        char[] options = {'E', 'X', 'O'};
+        for (int row = 0; row < grid.length; row++)
+            for (int col = 0; col < grid[0].length; col++)
+                grid[row][col] = options[(int)(Math.random() * options.length)];
+        saveBoardToFile();
+    }
 
+    public void clearBoard()
+    {
+        grid = new char[][]{{'E','E','E'},{'E','E','E'},{'E','E','E'}};
+        saveBoardToFile();
+    }
 
-	//valid if it resembles a 3x3 board that contains only E, X, O
-	public boolean isValidBoardFile()
-	{
-		try
-		{
-			File file = new File("src/tictactoe/"+this.filename);
-			Scanner scanner = new Scanner(file); 
-			int xCount = 0, oCount = 0; 
-			while(scanner.hasNextLine())
-			{
-				String line = scanner.nextLine().trim(); 
-				if(!line.matches("[EXO], [EXO], [EXO]"))
-				{
-					scanner.close(); 
-					return false; 
-				}
-				String[] lineArray = line.split(","); 
-				
-			}
-			
-		scanner.close(); 
-		return xCount == oCount || xCount == oCount + 1; 
-			
-		}
-		catch(Exception error)
-		{
-			error.printStackTrace(); 
-			return false; 
-		}
-		
-		
-	}
-
-
-	//saves the grid to the file in the proper format (CSV)
-	public void saveBoardToFile()
-	{
-		try
-		{
-			File file = new File("src/tictactoe/"+this.filename); 
-			FileWriter writer = new FileWriter(file);  
-			String boardContents = ""; 
-			for(int row = 0; row < grid.length; row++)
-			{
-				for(int col = 0; col < grid[0].length; col++)
-				{
-					if(col < 2) boardContents += grid[row][col] + ",";
-					else boardContents += grid[row][col]; 
-				}
-				if(row < 2) boardContents += "\n"; 
-			}
-			
-			writer.write(boardContents);
-			writer.close(); 
-		}
-		catch(Exception error)
-		{
-			error.printStackTrace(); 
-		}
-		
-
-	}
-	
-
-
-	/***These are the methods used to test those above***/
-	//prints the current grid
-	public void printGrid()
-	{
-		for(int row = 0; row < grid.length; row++)
-		{
-			for(int col = 0; col < grid[0].length; col++)
-			{
-				System.out.print(grid[row][col] + " ");
-			}
-			System.out.println(); 
-		}
-
-	}
-
-	//create a random board
-	public void createRandomBoard()
-	{
-		char[] options = {'E', 'X', 'O'}; //Row major order 
-		for(int row = 0; row < grid.length; row++)
-		{
-			for(int col = 0; col < grid[0].length; col++)
-			{
-				int index = (int)(Math.random() * options.length); 
-				grid[row][col] = options[index]; 
-			}
-		}
-		
-		this.saveBoardToFile();
-	}
-
-	//clears the grid by placing E in every cell
-	public void clearBoard()
-	{
-		char[][] clearedBoard = {{'E', 'E', 'E'},
-								 {'E', 'E', 'E'},
-								 {'E', 'E', 'E'}}; 
-		
-		this.grid = clearedBoard;
-		this.saveBoardToFile(); 
-	}
-
-	public static void main(String args[])
-	{
-		Board b = new Board("board.csv");
-		System.out.println(b.isValidBoardFile());
-		b.createRandomBoard();
-		b.printGrid();
-		b.saveBoardToFile();
-		b.loadBoardFromFile();
-		System.out.println();
-		b.printGrid(); 
-	}
-	
-	
+    public static void main(String[] args)
+    {
+        Board b = new Board("board.csv");
+        System.out.println(b.isValidBoardFile());
+        b.createRandomBoard();
+        b.printGrid();
+        b.saveBoardToFile();
+        b.loadBoardFromFile();
+        System.out.println();
+        b.printGrid();
+    }
 }
